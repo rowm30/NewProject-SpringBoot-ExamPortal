@@ -2,6 +2,8 @@ package com.exam.controller;
 
 
 import com.exam.config.JwtUtils;
+import com.exam.model.JwtRequest;
+import com.exam.model.JwtResponse;
 import com.exam.service.impl.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,9 +11,15 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@CrossOrigin("*")
 public class AuthenticateController {
 
     @Autowired
@@ -25,7 +33,24 @@ public class AuthenticateController {
 
 //    generate token
 
-    public ResponseEntity<?>
+
+    @PostMapping("/generate-token")
+    public ResponseEntity<?> generateToken(@RequestBody JwtRequest jwtRequest) throws Exception {
+
+        try{
+            authenticate(jwtRequest.getUsername(),jwtRequest.getPassword());
+        }catch(UsernameNotFoundException e){
+            e.printStackTrace();
+            throw new Exception("User not found ");
+        }
+
+//        Authenticate
+
+        UserDetails userDetails =  this.userDetailsService.loadUserByUsername(jwtRequest.getUsername());
+        String token = this.jwtUtils.generateToken(userDetails);
+        return ResponseEntity.ok(new JwtResponse(token));
+
+    }
 
 
 
