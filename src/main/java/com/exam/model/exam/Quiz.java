@@ -67,7 +67,7 @@ public class Quiz {
         this.maxMarks = maxMarks;
     }
 
-    public String getNumberOfQuestion() {
+    public String getNumberOfQuestions() {
         return numberOfQuestion;
     }
 
@@ -91,4 +91,11 @@ public class Quiz {
         this.catagory = catagory;
     }
 
+    public Set<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(Set<Question> questions) {
+        this.questions = questions;
+    }
 }
